@@ -17,7 +17,7 @@ PULLCORD_DIR = "/home/sanqui/archive/discord/run"
 
 IGNORE_GUILD_IDS = [139677590393716737, 272603653389549578]
 
-guild_ids = [int(x.name) for x in Path(PULLCORD_DIR+"/channels").iterdir()]
+guild_ids = [int(x.name) for x in Path(PULLCORD_DIR+"/channels").iterdir() if x.name != "@me"]
 
 guilds = {}
 
