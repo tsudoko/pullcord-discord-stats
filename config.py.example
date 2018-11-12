@@ -1,0 +1,3 @@
+PULLCORD_DIR = "../pullcord/"
+
+IGNORE_GUILD_IDS = []

@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>Discord stats</title>
+    <style>
+body {
+    background-color: #202225;
+    color: white;
+    font-family: sans-serif;
+}
+
+.container {
+    width: 80%; margin: auto;
+    max-width: 800px;
+}
+
+.guild {clear: both; padding-top: 8px;}
+
+.icon {width: 64px; height: 64px; float: left; margin-right: 8px; text-align: center;
+    background-color: #2f3136; border-radius: 4px;}
+    
+.entry {display: inline-block;}
+
+.guild-info {margin-left: 80px;}
+.guild-bar  {background-color: #36393f; width: 100%; height: 4px; margin-bottom: 1px;}
+.guild-bar2 {background-color: #56393f; width: 100%; height: 4px; margin-bottom: 1px;}
+.guild-name {margin-bottom: 6px; font-weight: bold;}
+.guild-id {font-size: small; font-family: monospace;}
+
+.label {background-color: #36393f; border-color: 8px; padding: 0px 4px 0px 4px; font-size:smaller;}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        
+        <h1>Discord stats</h1>
+        <p>Archived {{ guilds|count }} servers, {{ total_channels }} channels (incl. categories and voice channels), {{ total_members }} members (with overlap), totalling {{ (total_text_filesize/1024/1024) | round(1) }} MiB of text data.
+        
+        <p>Scrapes include attachments.  Some servers are incomplete atm (e.g. TCRF) due to bugs in pullcord.  Stats are not realtime.
+        
+        {% for guild_id, guild in guilds.items() %}
+            <div class="guild">
+                {% if guild.icon %}
+                    <img src="icons/{{guild_id}}/{{guild.icon}}.png" class="icon">
+                {% else %}
+                    <div class="icon"> {{guild.name[0]}} </div>
+                {% endif %}
+                <div class="guild-info">
+                    <div class="guild-name">{{ guild.name }}</div>
+                    <div>
+                        <div class="entry" style="width: 17.5%;">{{ guild.channels | count }} channels,</div>
+                        <div class="entry" style="width: 20.0%;">{{ guild.members | count }} members,</div>
+                        <div class="entry" style="width: 30.0%;">total {{ (guild.filesize/1024/1024) | round(1) }} MiB of text data</div>
+                    </div>
+                    {#
+                    <div class="channels">
+                        <ul>
+                            {% for category_id, category in guild.channels.items() if category.chantype == "category" %}
+                                <li title="{{category.topic}}"><span class="label">{{category.chantype}}</span> {{ category.name }}
+                                    <ul>
+                                        {% for channel_id, channel in guild.channels.items() if channel.category == category_id %}
+                                            <li title="{{channel.topic}}"><span class="label">{{channel.chantype}}</span> {{ channel.name }}
+                                        {% endfor %}
+                                    </ul>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    #}
+                    <span class="guild-id">{{guild.id}}</span>
+                    <div class="guild-bar"  style="width: {{(guild_sizes[guild_id] / max_guild_sizes) * 100 | round}}%;"></div>
+                    <div class="guild-bar2" style="width: {{(guild.filesize / max_guild_filesize) * 100 | round}}%;"></div>
+                </div>
+            </div>
+        {% endfor %}
+    
+    </div>
+</body>
+</html>
